@@ -1,0 +1,16 @@
+[package]
+name = "ssh_client"
+version = "0.1.0"
+authors = ["angelocat <catalaniangelo@gmail.com>"]
+edition = "2018"
+
+
+[[bin]]
+name="ssh_client"
+path="src/main.rs"
+
+[lib]
+name="ssh_client"
+path="src/lib.rs"
+
+[dependencies]
