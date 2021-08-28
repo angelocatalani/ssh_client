@@ -1,2 +1,11 @@
-# ssh_client
-SSH client in Rust
+# SSH Client
+
+[![Actions Status](https://github.com/angelocatalani/ssh_client/actions/workflows/main.yml/badge.svg)](https://github.com/angelocatalani/ssh_client/actions)
+
+# Table of Contents
+
+* [Usage](#usage)
+
+## Usage
+
+TODO
