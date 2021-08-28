@@ -6,12 +6,12 @@ edition = "2018"
 
 
 [[bin]]
-name="ssh_client"
-path="src/main.rs"
+name = "ssh_client"
+path = "src/main.rs"
 
 [lib]
-name="ssh_client"
-path="src/lib.rs"
+name = "ssh_client"
+path = "src/lib.rs"
 
 [dependencies]
 ssh2 = "0.9"

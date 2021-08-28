@@ -1,4 +1,4 @@
 /target
 .idea/
-/tests/config/pub_key/*
-!/tests/config/pub_key/id_rsa.pub
+/configuration/pub_key/*
+!/configuration/pub_key/id_rsa.pub

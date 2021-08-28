@@ -1,7 +1,7 @@
+use std::io::Read;
 use std::net::TcpStream;
 
 use ssh2::Session;
-use std::io::Read;
 
 #[test]
 fn connect_to_ssh_server_with_username_password() {
@@ -29,7 +29,7 @@ fn connect_to_ssh_server_with_private_key() {
     sess.userauth_pubkey_file(
         "test_user",
         None,
-        "tests/config/private_key/id_rsa".as_ref(),
+        "configuration/private_key/id_rsa".as_ref(),
         None,
     )
     .unwrap();
