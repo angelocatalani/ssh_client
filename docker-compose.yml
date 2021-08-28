@@ -7,7 +7,6 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Europe/London
       - PUBLIC_KEY_FILE=/config/id_rsa.pub
       - PASSWORD_ACCESS=true
       - USER_PASSWORD=test_password

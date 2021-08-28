@@ -9,6 +9,7 @@ jobs:
   test:
     name: Test Suite
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -18,10 +19,14 @@ jobs:
           toolchain: stable
           profile: minimal
           override: true
+      - name: Start openssh-test-server
+        run: docker-compose -f "docker-compose.yml" up -d --build
       - uses: actions-rs/cargo@v1
         with:
           command: test
           args: --all-features --workspace
+      - name: Stop containers
+        run: docker-compose -f "docker-compose.yml" down
 
   rustfmt:
     name: Rustfmt
