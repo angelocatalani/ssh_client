@@ -9,3 +9,7 @@
 ## Usage
 
 TODO
+
+## Resources
+
+[Rust SSH cli tool](https://saidvandeklundert.net/learn/2021-08-06-rust-ssh-cli-tool/)
