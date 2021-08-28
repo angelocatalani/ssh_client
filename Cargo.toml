@@ -14,3 +14,4 @@ name="ssh_client"
 path="src/lib.rs"
 
 [dependencies]
+ssh2 = "0.9"

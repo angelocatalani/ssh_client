@@ -1,0 +1,19 @@
+version: "3"
+services:
+  openssh-test-server:
+    image: ghcr.io/linuxserver/openssh-server
+    container_name: openssh-server
+    hostname: openssh-server
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
+      - PUBLIC_KEY_FILE=/config/id_rsa.pub
+      - PASSWORD_ACCESS=true
+      - USER_PASSWORD=test_password
+      - USER_NAME=test_user
+    volumes:
+      - ./tests/config/pub_key:/config
+    ports:
+      - 2222:2222
+    restart: unless-stopped
