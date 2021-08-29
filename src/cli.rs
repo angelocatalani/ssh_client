@@ -16,16 +16,13 @@ pub struct Cli {
 #[derive(StructOpt)]
 #[structopt(
     name = "Authentication method",
-    about = "Authenticate with password or pub key"
+    about = "Authenticate with password or private key file path"
 )]
 pub enum CliAuthMethod {
-    Password {
-        #[structopt(short = "p", long = "password")]
-        pwd: String,
-    },
-
-    PrivateKey {
-        #[structopt(short = "k", long = "private_key_path")]
-        path: String,
-    },
+    #[structopt(about = "The password to authenticate the user")]
+    Password { pwd: String },
+    #[structopt(
+        about = "The private key file path, associated to the public key known to the SSH server"
+    )]
+    PrivateKey { path: String },
 }

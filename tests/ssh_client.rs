@@ -14,7 +14,6 @@ fn cli_executes_command_with_password_authentication() {
         "-a",
         "0.0.0.0:2222",
         "password",
-        "--password",
         "test_password",
     ]);
     cmd.assert()
@@ -33,7 +32,6 @@ fn cli_executes_command_with_private_key_authentication() {
         "-a",
         "0.0.0.0:2222",
         "private-key",
-        "--private_key_path",
         "configuration/private_key/id_rsa",
     ]);
     cmd.assert()
