@@ -16,7 +16,7 @@ fn cli_executes_command_after_password_authentication() {
     ]);
     cmd.assert()
         .success()
-        .stdout(predicate::str::contains("SSH Response:\n"));
+        .stdout(predicate::str::contains("Command: ls\nExit Code: 0\n"));
 }
 
 #[test]
@@ -34,5 +34,24 @@ fn cli_executes_command_after_private_key_authentication() {
     ]);
     cmd.assert()
         .success()
-        .stdout(predicate::str::contains("SSH Response:\n"));
+        .stdout(predicate::str::contains("Command: ls\nExit Code: 0\n"));
+}
+
+#[test]
+fn cli_explains_failed_authentication() {
+    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    cmd.args(&[
+        "-u",
+        "test_user",
+        "-c",
+        "ls",
+        "-a",
+        "0.0.0.0:2222",
+        "password",
+        "wrong_password",
+    ]);
+    cmd.assert().failure().stderr(predicate::str::contains(
+        "Error processing command: Failed to authenticate with username and password\n",
+    ));
+    cmd.assert().code(exitcode::USAGE);
 }

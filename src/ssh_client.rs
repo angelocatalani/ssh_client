@@ -2,10 +2,10 @@ use std::cell::RefCell;
 use std::io::Read;
 use std::net::{TcpStream, ToSocketAddrs};
 
-use ssh2::{Channel, Session};
+use ssh2::Session;
 
 pub struct SSHClient {
-    channel: RefCell<Channel>,
+    session: RefCell<Session>,
 }
 
 impl SSHClient {
@@ -13,44 +13,38 @@ impl SSHClient {
         socket_address: A,
         username: &str,
         password: &str,
-    ) -> Self {
-        let tcp = TcpStream::connect(socket_address).unwrap();
-        let mut sess = Session::new().unwrap();
-        sess.set_tcp_stream(tcp);
-        sess.handshake().unwrap();
-        sess.userauth_password(&username, &password).unwrap();
-        let channel = sess.channel_session().unwrap();
-        Self {
-            channel: RefCell::new(channel),
-        }
+    ) -> anyhow::Result<Self> {
+        let tcp = TcpStream::connect(socket_address)?;
+        let mut session = Session::new()?;
+        session.set_tcp_stream(tcp);
+        session.handshake()?;
+        session.userauth_password(&username, &password)?;
+        Ok(Self {
+            session: RefCell::new(session),
+        })
     }
 
     pub fn from_private_key_path<A: ToSocketAddrs>(
         socket_address: A,
         username: &str,
         private_key_path: &str,
-    ) -> Self {
-        let tcp = TcpStream::connect(socket_address).unwrap();
-        let mut sess = Session::new().unwrap();
-        sess.set_tcp_stream(tcp);
-        sess.handshake().unwrap();
-        sess.userauth_pubkey_file(&username, None, private_key_path.as_ref(), None)
-            .unwrap();
-        let channel = sess.channel_session().unwrap();
-        Self {
-            channel: RefCell::new(channel),
-        }
+    ) -> anyhow::Result<Self> {
+        let tcp = TcpStream::connect(socket_address)?;
+        let mut session = Session::new()?;
+        session.set_tcp_stream(tcp);
+        session.handshake()?;
+        session.userauth_pubkey_file(&username, None, private_key_path.as_ref(), None)?;
+        Ok(Self {
+            session: RefCell::new(session),
+        })
     }
-    pub fn run_command(&self, command: &str) -> String {
-        self.channel.borrow_mut().exec(command).unwrap();
+    pub fn run_command(&self, command: &str) -> anyhow::Result<(String, i32)> {
+        let mut channel = self.session.borrow_mut().channel_session()?;
+        channel.exec(command)?;
         let mut s = String::new();
-        self.channel.borrow_mut().read_to_string(&mut s).unwrap();
-        s
-    }
-}
-
-impl Drop for SSHClient {
-    fn drop(&mut self) {
-        self.channel.borrow_mut().close().unwrap()
+        channel.read_to_string(&mut s)?;
+        channel.close().unwrap();
+        let exit_code = channel.exit_status()?;
+        Ok((s, exit_code))
     }
 }
