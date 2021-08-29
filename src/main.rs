@@ -42,7 +42,7 @@ fn handle_command() -> anyhow::Result<()> {
     cli.commands
         .into_iter()
         .progress_with(pb)
-        .map(|command| {
+        .try_for_each(|command| {
             // sleep to plot a fancy progress bar
             thread::sleep(Duration::from_secs(1));
             let (response, exit_code) = c.run_command(&command).context("Failed to run command")?;
@@ -51,5 +51,4 @@ fn handle_command() -> anyhow::Result<()> {
             writeln!(stream, "Response: {}", response).context("Failed to output Response")?;
             Ok(())
         })
-        .collect()
 }

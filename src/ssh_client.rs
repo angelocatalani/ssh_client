@@ -18,7 +18,7 @@ impl SSHClient {
         let mut session = Session::new()?;
         session.set_tcp_stream(tcp);
         session.handshake()?;
-        session.userauth_password(&username, &password)?;
+        session.userauth_password(username, password)?;
         Ok(Self {
             session: RefCell::new(session),
         })
@@ -33,7 +33,7 @@ impl SSHClient {
         let mut session = Session::new()?;
         session.set_tcp_stream(tcp);
         session.handshake()?;
-        session.userauth_pubkey_file(&username, None, private_key_path.as_ref(), None)?;
+        session.userauth_pubkey_file(username, None, private_key_path.as_ref(), None)?;
         Ok(Self {
             session: RefCell::new(session),
         })
