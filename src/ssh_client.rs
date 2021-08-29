@@ -9,31 +9,36 @@ pub struct SSHClient {
 }
 
 impl SSHClient {
-    pub fn new<A: ToSocketAddrs>(
+    pub fn from_password<A: ToSocketAddrs>(
         socket_address: A,
         username: &str,
-        auth_method: AuthMethod,
+        password: &str,
     ) -> Self {
         let tcp = TcpStream::connect(socket_address).unwrap();
         let mut sess = Session::new().unwrap();
         sess.set_tcp_stream(tcp);
         sess.handshake().unwrap();
-        match auth_method {
-            AuthMethod::Password(password) => {
-                sess.userauth_password(&username, &password).unwrap();
-                let channel = sess.channel_session().unwrap();
-                Self {
-                    channel: RefCell::new(channel),
-                }
-            }
-            AuthMethod::PubKey(private_key_path) => {
-                sess.userauth_pubkey_file(&username, None, private_key_path.as_ref(), None)
-                    .unwrap();
-                let channel = sess.channel_session().unwrap();
-                Self {
-                    channel: RefCell::new(channel),
-                }
-            }
+        sess.userauth_password(&username, &password).unwrap();
+        let channel = sess.channel_session().unwrap();
+        Self {
+            channel: RefCell::new(channel),
+        }
+    }
+
+    pub fn from_private_key_path<A: ToSocketAddrs>(
+        socket_address: A,
+        username: &str,
+        private_key_path: &str,
+    ) -> Self {
+        let tcp = TcpStream::connect(socket_address).unwrap();
+        let mut sess = Session::new().unwrap();
+        sess.set_tcp_stream(tcp);
+        sess.handshake().unwrap();
+        sess.userauth_pubkey_file(&username, None, private_key_path.as_ref(), None)
+            .unwrap();
+        let channel = sess.channel_session().unwrap();
+        Self {
+            channel: RefCell::new(channel),
         }
     }
     pub fn run_command(&self, command: &str) -> String {
@@ -47,19 +52,5 @@ impl SSHClient {
 impl Drop for SSHClient {
     fn drop(&mut self) {
         self.channel.borrow_mut().close().unwrap()
-    }
-}
-
-pub enum AuthMethod<'auth> {
-    Password(&'auth str),
-    PubKey(&'auth str),
-}
-
-impl<'auth> AuthMethod<'auth> {
-    pub fn from_password(password: &'auth str) -> Self {
-        Self::Password(password)
-    }
-    pub fn from_private_key(private_key_path: &'auth str) -> Self {
-        Self::PubKey(private_key_path)
     }
 }

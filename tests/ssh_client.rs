@@ -1,10 +1,8 @@
 use assert_cmd::Command;
 use predicates::prelude::predicate;
 
-use ssh_client::{AuthMethod, SSHClient};
-
 #[test]
-fn cli_executes_command_with_password_authentication() {
+fn cli_executes_command_after_password_authentication() {
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
     cmd.args(&[
         "-u",
@@ -22,7 +20,7 @@ fn cli_executes_command_with_password_authentication() {
 }
 
 #[test]
-fn cli_executes_command_with_private_key_authentication() {
+fn cli_executes_command_after_private_key_authentication() {
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
     cmd.args(&[
         "-u",

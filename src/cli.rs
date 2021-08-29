@@ -6,7 +6,7 @@ pub struct Cli {
     #[structopt(short = "u", long = "username")]
     pub username: String,
     #[structopt(subcommand)]
-    pub auth_method: CliAuthMethod,
+    pub auth_method: AuthMethod,
     #[structopt(short = "c", long = "command")]
     pub command: String,
     #[structopt(short = "a", long = "address")]
@@ -18,7 +18,7 @@ pub struct Cli {
     name = "Authentication method",
     about = "Authenticate with password or private key file path"
 )]
-pub enum CliAuthMethod {
+pub enum AuthMethod {
     #[structopt(about = "The password to authenticate the user")]
     Password { pwd: String },
     #[structopt(
